@@ -1,0 +1,38 @@
+services:
+  # Este es el nombre del servicio para tu API de Python
+  taxtech-api:
+    build: .
+    container_name: api-soberana-python
+    # Mapea el puerto 8000 de tu código al puerto 8000 de tu PC
+    ports:
+      - "8000:8000"
+    restart: always
+    networks:
+      - red-privada-soberana
+
+  # Este es el servicio de n8n (la herramienta de automatización)
+  n8n-automation:
+    image: n8nio/n8n:latest
+    container_name: n8n-local
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+    # Esto guarda tus automatizaciones aunque apagues el PC
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - red-privada-soberana
+    # Indica que primero se debe encender tu API de Python
+    depends_on:
+      - taxtech-api
+
+networks:
+  # Crea una red interna para que el código no salga a internet si no quieres
+  red-privada-soberana:
+    driver: bridge
+
+volumes:
+  n8n_data:
