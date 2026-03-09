@@ -4,18 +4,18 @@
 
 # VeriStack
 
-> **Zero-trust RAG architecture for strict financial compliance.**
+> **Arquitectura RAG Zero-trust para estricto cumplimiento financiero.**
 
-VeriStack provides a self-hosted, async-first backend to validate PKCS12 certificates and process financial documents (TicketBAI / VeriFactu) using local vector embeddings. Zero data leaks. Sub-second latency.
+VeriStack proporciona un backend self-hosted y async-first para validar certificados PKCS12 y procesar documentos financieros (TicketBAI / VeriFactu) mediante embeddings vectoriales locales. Cero fuga de datos. Latencia sub-second.
 
-## ⚠️ The Problem
-Building AI-driven financial pipelines exposes critical vulnerabilities:
-- **Data Sovereignty Violations:** Sending local tax invoices to third-party APIs (OpenAI, Anthropic) breaks strict European compliance.
-- **Latency Overheads:** Network trips for document validation and embedding generation create massive CI/CD and production bottlenecks.
-- **Orchestration Hell:** Managing cryptographic certificates (PKCS12) alongside AI data pipelines usually results in unmaintainable spaghetti code.
+## ⚠️ El Problema
+Construir pipelines financieros basados en IA expone vulnerabilidades críticas:
+- **Violación de Soberanía del Dato:** Enviar facturas a APIs de terceros (OpenAI, Anthropic) rompe el estricto cumplimiento normativo europeo.
+- **Overhead de Latencia:** Los viajes de red para validar documentos y generar embeddings crean cuellos de botella masivos en CI/CD y producción.
+- **Infierno de Orquestación:** Gestionar certificados criptográficos (PKCS12) junto con pipelines de IA suele terminar en código espagueti inmanejable.
 
-## ⚡ The 1-Minute Install
-Zero-config deployment. Self-hosted by default. Tested on Linux and Windows (WSL2).
+## ⚡ Instalación en 1 Minuto
+Despliegue *Zero-config*. Self-hosted por defecto. Probado en Linux y Windows (WSL2).
 
 ```bash
 git clone https://github.com/franamaro-dev/VeriStack.git
@@ -29,18 +29,18 @@ curl http://localhost:8000/health
 ```
 
 ## 🧠 Key Features
-*   🔒 **Privacy-first RAG:** 100% local embedding generation and document processing. External networks are bypassed by design.
-*   🚀 **Async-First Core:** Built on FastAPI/Uvicorn for concurrent, non-blocking asynchronous certificate validation.
-*   🇪🇸 **Drop-in Compliance:** Pre-configured endpoints for VeriFactu and TicketBAI `.p12`/`.pfx` node validation.
-*   🧩 **Seamless Orchestration:** Ships with an isolated n8n container to visually route your compliance workflows over the internal bridge network.
+*   🔒 **Privacy-first RAG:** Generación de embeddings y procesamiento de documentos 100% local. Las redes externas se saltan por diseño.
+*   🚀 **Async-First Core:** Construido sobre FastAPI/Uvicorn para validación concurrente asíncrona de certificados.
+*   🇪🇸 **Drop-in Compliance:** Endpoints preconfigurados para validación de nodos `.p12`/`.pfx` de VeriFactu y TicketBAI.
+*   🧩 **Orquestación Transparente:** Incluye un contenedor n8n aislado para enrutar visualmente tus flujos a través de redes bridge internas.
 
 ## 🏗️ Architecture Stack
 *   **API Gateway & Compute:** Python 3.11, FastAPI, Pydantic (V2)
 *   **Vector Search & AI:** Qdrant (Local), Langchain Core
-*   **Cryptography:** PyCA Cryptography (PKCS12, X.509)
+*   **Criptografía:** PyCA Cryptography (PKCS12, X.509)
 *   **Workflows:** n8n (Locally hosted)
 
 ---
 <div align="center">
-  <i>Engineered for Senior-Level system architectures. Perfect for <b>FinTech</b> and <b>Enterprise</b> scale.</i>
+  <i>Ingeniería para arquitecturas de nivel Senior. Perfecto para escala <b>FinTech</b> y <b>Enterprise</b>.</i>
 </div>
