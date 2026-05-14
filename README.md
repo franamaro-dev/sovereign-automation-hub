@@ -1,46 +1,119 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/franamaro-dev/VeriStack/main/.assets/header.jpg" width="100%" alt="VeriStack Banner">
-</div>
 
 # VeriStack
 
-> **Arquitectura RAG Zero-trust para estricto cumplimiento financiero.**
+**Microservices architecture for cryptographic data validation and fiscal workflow automation.**
 
-VeriStack proporciona un backend self-hosted y async-first para validar certificados PKCS12 y procesar documentos financieros (TicketBAI / VeriFactu) mediante embeddings vectoriales locales. Cero fuga de datos. Latencia sub-second.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![n8n](https://img.shields.io/badge/n8n-EA4B71?logo=n8n&logoColor=white)](https://n8n.io/)
+[![CI](https://github.com/franamaro-dev/VeriStack/actions/workflows/ci.yml/badge.svg)](https://github.com/franamaro-dev/VeriStack/actions)
 
-## ⚠️ El Problema
-Construir pipelines financieros basados en IA expone vulnerabilidades críticas:
-- **Violación de Soberanía del Dato:** Enviar facturas a APIs de terceros (OpenAI, Anthropic) rompe el estricto cumplimiento normativo europeo.
-- **Overhead de Latencia:** Los viajes de red para validar documentos y generar embeddings crean cuellos de botella masivos en CI/CD y producción.
-- **Infierno de Orquestación:** Gestionar certificados criptográficos (PKCS12) junto con pipelines de IA suele terminar en código espagueti inmanejable.
+</div>
 
-## ⚡ Instalación en 1 Minuto
-Despliegue *Zero-config*. Self-hosted por defecto. Probado en Linux y Windows (WSL2).
+---
+
+## What it solves
+
+Fiscal-grade data integrity is hard: invoices, ledgers and audit chains need to be **tamper-evident, signable and queryable** without coupling business logic to the cryptography layer.
+
+VeriStack splits that concern into independent, dockerized microservices that talk over a private network and are orchestrated via **n8n** for retries, alerts and batch jobs.
+
+---
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Client[Client / Partner API] -->|REST| Gateway[FastAPI Gateway]
+    Gateway --> Verify[Verification Service]
+    Gateway --> Sign[Signing Service]
+    Verify --> Hash[(Hash Chain Store)]
+    Sign --> Keys[(Key Vault)]
+    n8n[n8n Orchestrator] -->|webhook| Gateway
+    n8n -->|alerts| Slack[Alerting]
+
+    style Gateway fill:#009688,color:#fff
+    style n8n fill:#EA4B71,color:#fff
+```
+
+| Service | Responsibility | Stack |
+|---------|---------------|-------|
+| **Gateway** | Auth, rate-limit, routing | FastAPI + JWT |
+| **Verification** | Hash-chain validation, audit trail | Python + SQLite/PG |
+| **Signing** | Cryptographic signing, key rotation | Python + `cryptography` |
+| **Orchestration** | Retries, batch jobs, alerts | n8n |
+
+---
+
+## Quickstart
 
 ```bash
 git clone https://github.com/franamaro-dev/VeriStack.git
 cd VeriStack
-
-# Spin up FastAPI, Qdrant (Vector DB), and n8n via Docker
-docker compose up -d
-
-# Check node health
-curl http://localhost:8000/health
+docker compose up --build
 ```
 
-## 🧠 Key Features
-*   🔒 **Privacy-first RAG:** Generación de embeddings y procesamiento de documentos 100% local. Las redes externas se saltan por diseño.
-*   🚀 **Async-First Core:** Construido sobre FastAPI/Uvicorn para validación concurrente asíncrona de certificados.
-*   🇪🇸 **Drop-in Compliance:** Endpoints preconfigurados para validación de nodos `.p12`/`.pfx` de VeriFactu y TicketBAI.
-*   🧩 **Orquestación Transparente:** Incluye un contenedor n8n aislado para enrutar visualmente tus flujos a través de redes bridge internas.
+Gateway will be available at `http://localhost:8000/docs` (OpenAPI).
 
-## 🏗️ Architecture Stack
-*   **API Gateway & Compute:** Python 3.11, FastAPI, Pydantic (V2)
-*   **Vector Search & AI:** Qdrant (Local), Langchain Core
-*   **Criptografía:** PyCA Cryptography (PKCS12, X.509)
-*   **Workflows:** n8n (Locally hosted)
+### Run tests
+
+```bash
+pip install -r requirements.txt
+pytest -v
+```
+
+See [TESTING.md](TESTING.md) for fixtures and coverage strategy.
 
 ---
+
+## Tech stack
+
+| Layer | Tools |
+|-------|-------|
+| API | FastAPI, Pydantic v2 |
+| Crypto | `cryptography`, hashlib, JWT |
+| Persistence | SQLite (dev), PostgreSQL (prod) |
+| Orchestration | n8n |
+| Packaging | Docker, docker-compose |
+| Testing | pytest, httpx |
+
+---
+
+## Project structure
+
+```
+.
+├── app/                  # FastAPI services (gateway, verify, sign)
+├── tests/                # pytest suite
+├── docker-compose.yml    # multi-service orchestration
+├── Dockerfile            # base image
+├── requirements.txt
+└── TESTING.md            # test strategy
+```
+
+---
+
+## Roadmap
+
+- [ ] XAdES signature module (RD 1007/2023 compliance)
+- [ ] Distributed hash chain (Merkle tree)
+- [ ] OpenTelemetry instrumentation
+- [ ] Helm chart for Kubernetes
+
+---
+
+## License
+
+[MIT](LICENSE) © Francisco Amaro Prieto
+
+---
+
 <div align="center">
-  <i>Ingeniería para arquitecturas de nivel Senior. Perfecto para escala <b>FinTech</b> y <b>Enterprise</b>.</i>
+
+Built by [Francisco Amaro](https://github.com/franamaro-dev) — Backend Engineer & SOC L1 Analyst
+[LinkedIn](https://linkedin.com/in/franamaro) · [Email](mailto:franamaroprieto@gmail.com)
+
 </div>
